@@ -141,6 +141,9 @@ Here, I'm trying to represent this data by breaking it into components that holi
 
 ### Feature Selection Considerations
 
+> [!NOTE]
+> AMD will be used to analyze these features
+
 To optimize my feature selection methods, the following data was considered:
 
 **RMSE vs Noise Variables of Various ML Models:**
@@ -157,30 +160,44 @@ I'll test 2 different variables that are likely candidates for an RNN model to f
 
 Statistics:
 
-![AMD Hypothesis Volatility Stats](images/amd_hv_sumstats.png)
+![AMD relative_pct Stats](images/amd_rp_sumstats.png)
+
+We can see that the data is more or less evenly distributed. All other statistical characteristics are as expected from a percentage-type data point.
 
 Autocorrelation:
 
-![AMD Hypothesis Volatility Stats](images/amd_hv_sumstats.png)
+![AMD relative_pct Autocorrelation](images/amd_rp_autocorr.png)
+
+There seems to be a high autocorrelation for this variable. This type of autocorrelation graph shows that this variable exhibits a random wandering behavior, and autocorrelation also decreases as the lag increases.
 
 **The log_returns Variable:**
 
 Statistics:
 
-![AMD Hypothesis Volatility Stats](images/amd_hv_sumstats.png)
+![AMD log_return Stats](images/amd_lr_sumstats.png)
+
+We can see a close Gaussian distribution with a kurtosis of 2.68, as expected from log returns. 
 
 Autocorrelation:
 
-![AMD Hypothesis ATR Stats](images/amd_hatrad_sumstats.png)
+![AMD log_returns Autocorrelation](images/amd_lr_autocorr.png)
 
+Here there is very little autocorrelation.
+
+Stationarity:
+From the test.py file, I also tested the stationarity of each variable using an ADF (Augmented Dickey-Fuller) test for stationarity, with the following p-values:
+
+```
+p-value for relative_pct: 9.62030635325794e-09
+p-value for log_return: 3.1381392692853873e-24
+```
+
+With p-values below 
 
 **Results:**
 
 ![AMD Hypothesis ATR Stats](images/vol_vs_atrdiff.png)
 
-It appears that there is no significant correlation between the relative magnitude of volatility and the future variability of price. One notable observation is that there seems to be a relationship where higher current volatility is associated with a decrease in future price variability. (NOTE: Point density at 0 and 1 is due to Volatility_Pct having lower lows or higher highs. Not that important as it is intended to be used as a demonstration.)
-
-With that in mind, it may be important to add features relating to volatility.
 
 ## Machine Learning Models
 
