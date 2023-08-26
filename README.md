@@ -6,7 +6,7 @@ August 23, 2023
 
 ## Description
 
-This program is an extension of my previous project 1 (focused on data). This project takes refined time series features (of stock candlestick data), most notably SVM classification output as a feature for an RNN model. 
+This program is an extension of my previous project 1 (focused on data). This project takes refined time series features (of stock candlestick data), most notably SVM classification output as a feature for an RNN model. Testing will be done to determine whether or not a classification output variable will improve an RNN model's forecasting accuracy.
 
 ## Table of Contents
 
@@ -162,7 +162,7 @@ Statistics:
 
 ![AMD relative_pct Stats](images/amd_rp_sumstats.png)
 
-We can see that the data is more or less evenly distributed. All other statistical characteristics are as expected from a percentage-type data point.
+We can see that the data is more or less evenly distributed. All other statistical characteristics are as expected from a percentage-type data point. One thing to keep in mind is the density at 0 and 1. This is due to the stock prices moving to higher highs or lower lows within the rolling time blocks. Since it is still informative to know if a stock is moving past the upper and lower ranges, it may still be a suitable variable.
 
 Autocorrelation:
 
@@ -176,7 +176,7 @@ Statistics:
 
 ![AMD log_return Stats](images/amd_lr_sumstats.png)
 
-We can see a close Gaussian distribution with a kurtosis of 2.68, as expected from log returns. 
+We can see a close Gaussian distribution with minimal skewness, as expected from log returns. 
 
 Autocorrelation:
 
@@ -192,43 +192,206 @@ p-value for relative_pct: 9.62030635325794e-09
 p-value for log_return: 3.1381392692853873e-24
 ```
 
-With p-values below 
+With p-values below .05, both variables are stationary as there are no unit roots in either.
 
 **Results:**
 
-![AMD Hypothesis ATR Stats](images/vol_vs_atrdiff.png)
+log_return Over Time:
 
+![log_return_ot](images/relative_pct_ot.png)
+
+relative_pct Over Time:
+
+![relative_pct_ot](images/relative_pct_ot.png)
+
+
+While both variables appear to be stationary, the relative_pct variable has higher autocorrelation which may allow the RNN model to more easily interpret the underlying features. When viewing each variable over time, the log_return variable appears to be a stochastic process while the relative_pct variable has more structure. This may also help in simplifying the model. 
 
 ## Machine Learning Models
 
-**Model Selection:**
-As this project's primary focus is data gathering, cleaning, and analyzing, I'll select a commonly used classification algorithm such as SVMs. 
+### Model Selections and Results:
 
-**Validation:**
-A grid search kfold cross-validation method will be used to validate the model during training.
+I'll be testing whether or not the SVM model output can improve my RNN model's performance. For each test, I'll compare the results using data from 3 stocks, each in different sectors with historical data from the past 6 years. (Tech: AMD, Healthcare: JNJ, Real Estate: AMT)
 
-## Test Results
+**SVM Model and Label Creation:**
 
-Using historical data spanning five years for the ticker 'AMD' and utilizing the trained SVM model, I was able to come up with these results:
+The label used for the SVM model is the variable name 'Target', from the feature engineering and analysis section. For all tests, I'll be using an SVM model with a KFold grid-search cross-validation method. (refer to svm_model.py)
+
+AMD Results:
 
 ```
-Number of test samples: 143
+Number of test samples: 246
               precision    recall  f1-score     support
-0.0            0.292929  0.725000  0.417266   40.000000
-1.0            0.375000  0.193548  0.255319   31.000000
-2.0            0.750000  0.291667  0.420000   72.000000
-accuracy       0.391608  0.391608  0.391608    0.391608
-macro avg      0.472643  0.403405  0.364195  143.000000
-weighted avg   0.540854  0.391608  0.383535  143.000000
+0.0            1.000000  0.014286  0.028169   70.000000
+1.0            0.563265  1.000000  0.720627  138.000000
+2.0            0.000000  0.000000  0.000000   38.000000
+accuracy       0.565041  0.565041  0.565041    0.565041
+macro avg      0.521088  0.338095  0.249599  246.000000
+weighted avg   0.600531  0.565041  0.412270  246.000000
 ```
 
-Since there are three classes, an effective model should be able to classify a dataset correctly at a minimum of 33%, surpassing random guessing estimates. With a model accuracy of 39%, there's an improvement of around **18%** in successfully classifying stock trends.
+JNJ Results:
+
+```
+Number of test samples: 246
+              precision    recall  f1-score    support
+0.0            0.000000  0.000000  0.000000   70.00000
+1.0            0.540650  1.000000  0.701847  133.00000
+2.0            0.000000  0.000000  0.000000   43.00000
+accuracy       0.540650  0.540650  0.540650    0.54065
+macro avg      0.180217  0.333333  0.233949  246.00000
+weighted avg   0.292303  0.540650  0.379454  246.00000
+```
+
+AMT Results:
+
+```
+Number of test samples: 246
+              precision    recall  f1-score     support
+0.0            0.545455  0.141176  0.224299   85.000000
+1.0            0.579909  0.927007  0.713483  137.000000
+2.0            0.200000  0.041667  0.068966   24.000000
+accuracy       0.569106  0.569106  0.569106    0.569106
+macro avg      0.441788  0.369950  0.335583  246.000000
+weighted avg   0.530940  0.569106  0.481576  246.000000
+```
+
+Between the 3 different data, the model accuracy is relatively similar, ranging from 54%-56.9%. As model accuracy exceeds random guessing accuracy of 33.3%, it may be worthwhile to include this feature as input for my RNN model.
+
+**RNN Model:**
+
+- Features:
+  - I'll be using the same features used in the SVM model, as well as its output variable as a label. To simplify this feature pipeline, I'll just use the 'Target' variable to replace the SVM model output to determine RNN model performance given the SVM model is optimal. I'll also test RNN model performance with simulated 'Target' variable data, given the SVM model performance.
+- RNN model type:
+  - I'll be using LSTMs since they can learn long-term dependencies, which complement its feature's characteristics. (Some features capture the data environment by blocks of time).
+  - LSTMs will be used as the input layer and in the hidden layers.
+  - Dense layers will be used to transition into the output layer.
+- Sequential Inputs and Outputs:
+  - The model will take in feature inputs of a rolling sequence of the last 15 time steps.
+  - The model will output a plot of the actual 'relative_pct' and the predicted value from the most recent 60 timesteps in the dataset. This output will use only the test data split, which will not be exposed in the model training process. This model is also set up to be able to predict future timesteps. 
+- Model Structure:
+  - The source code contains 2 separate model specifications, one static model and one with model tuning capabilities (Keras RandomSearch).
+  - Since producing tuned models for each dataset takes significantly more computative resources, I'll just use the static model.
+  - Static model structure:
+
+```
+    model = Sequential()
+    model.add(LSTM(units=160, return_sequences=True, input_shape=(window_size, n_features)))
+    model.add(LSTM(units=192, return_sequences=True))
+    model.add(LSTM(units=16, return_sequences=False))
+    model.add(Dense(24))
+    model.add(Dense(units=output_size))
+    model.compile(loss='mae', optimizer='adam')
+    model.summary()
+```
+
+
+**RNN Model Results:**
+
+AMD Results:
+
+![amd_results](images/amd_results.png)
+
+![amd_mae](images/amd_mae.png)
+
+```
+MEAN ABSOLUTE ERROR(relative_pct):  0.055089182101428574
+```
+
+JNJ Results:
+
+![jnj_results](images/jnj_results.png)
+
+![jnj_mae](images/jnj_mae.png)
+
+```
+MEAN ABSOLUTE ERROR(relative_pct):  0.06846643913111793
+```
+
+AMT Results: 
+
+![amt_results](images/amt_results.png)
+
+![amt_mae](images/amt_mae.png)
+
+```
+MEAN ABSOLUTE ERROR(relative_pct):  0.07788217174636412
+```
+
+Example output:
+
+```
+            pred_relative_pct  relative_pct
+Date                                                  
+2023-03-15           0.576615      0.479798
+2023-03-16           0.447883      0.380907
+2023-03-17           0.462687      0.450463
+2023-03-20           0.473509      0.402163
+2023-03-21           0.609601      0.566685
+...                       ...           ... 
+2023-08-21           0.976862      1.000000
+2023-08-22           0.961305      0.936839
+2023-08-23           0.829593      0.758920
+2023-08-24           0.839816      0.788769
+2023-08-25           0.807870      0.744143
+```
+
+
+For each of the 3 stocks data, at the end of model training, we can see that the MAE(mean absolute) error is around 5.5%-7.8%. While the predictions seem to be somewhat accurate, we will test its performance without the SVM output feature.
+
+### Comparative Test Without SVM Output Feature
+
+AMD Results: MEAN ABSOLUTE ERROR(relative_pct):  0.05220697037548478
+JNJ Results: MEAN ABSOLUTE ERROR(relative_pct):  0.06891561530684288
+AMT Results: MEAN ABSOLUTE ERROR(relative_pct):  0.10697172070994057
+
+Overall, there seem to be variations with MAE slightly outperforming the SVM feature set or slightly performing worse. This can be due to RNNs having randomly initialized parameters or from the use of the Adam optimizer, which can produce different weight updates for each training session. While I'm not testing specifically for the optimization of RNN model accuracy, some statistical methods can be applied to increase understanding of model accuracy.
+
+### Statistical Accuracy of the SVM and LSTM Ensemble
+
+Using simulated 'Target' variable data generated with the SVM average accuracy, I'll test RNN model performance.
+
+SVM average accuracy: 55.83%
+
+To simulate the data, I'll randomly change the 'Target' variable value so that it matches the approximate amount of times that the SVM model will incorrectly classify its values:
+
+```
+svm_accuracy = .5583
+data_to_sim = 1 - svm_accuracy
+num_rows = int(len(df) * data_to_sim)
+random_row_change = np.random.choice(df.index, num_rows, replace=False)
+sim_value = np.random.choice([0, 1, -1])
+df.loc[random_row_change, 'Target'] = sim_value
+```
+
+**Results:**
+
+Testing with the same dataset (AMD):
+
+With optimal 'Target' data:
+Test 1: MEAN ABSOLUTE ERROR(relative_pct):  0.05462931130650463
+Test 2: MEAN ABSOLUTE ERROR(relative_pct):  0.050131781917677753
+Test 3: MEAN ABSOLUTE ERROR(relative_pct):  0.05325007232742109
+
+Average: .0526
+
+With simulated 'Target' data:
+Test 1: MEAN ABSOLUTE ERROR(relative_pct):  0.06266383698071137
+Test 2: MEAN ABSOLUTE ERROR(relative_pct):  0.07770268027735913
+Test 3: MEAN ABSOLUTE ERROR(relative_pct):  0.06634234334894962
+
+Average: .0689
+
+Here we can see that with a control data set between test sessions, there is a difference in performance of the LSTM model. There is about a 30.9% increase from the optimal 'Target' data vs. the simulated 'Target' data. This shows that there is a positive impact in adding a feature created from the SVM model. When comparing it to the LSTM model performance when the 'Target' feature is excluded, the average MAE is .076, which demonstrates that having the 'Target' variable does make a positive impact on the LSTM model.
+
+An improvement of this project is the usage of the model tuning function, which may optimize the LSTM model to fit the features provided.
+
 
 ## Use Cases
 
 ### Low Volatility Options Strategies
 
-These strategies exploit the implied volatility variable in options pricing models to collect premium.
+These strategies exploit the implied volatility variable in options pricing models to collect premiums.
 
 **Iron Condors, Credit Spreads, Butterfly Spreads:** When the model indicates that the stock price is likely to remain within the ATR range, signifying consolidation (prediction of 1), these options strategies can be formulated. The ATR can be used to identify estimated price ranges for potential strike prices, with the chosen window size serving as the option expiration timeframe.
 
