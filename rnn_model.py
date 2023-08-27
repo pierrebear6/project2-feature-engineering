@@ -5,6 +5,7 @@ from data import *
 from kerastuner.tuners import RandomSearch
 from datetime import datetime
 from kerastuner.engine.hyperparameters import HyperParameters
+from data import *
 
 
 # MODEL
@@ -67,7 +68,7 @@ def rnn_model_predict(model, unscaled_df, labels, X_test, window_size, unscaled_
 
 
 def tuned_model(window_size, n_features, output_size, X_train, y_train, X_val, y_val):
-    LOG_DIR = f"D:/simon/portfolio_projects/project2/data/tuned_rnn_models/{str(datetime.now().strftime('%d-%m-%Y %H-%M-%S'))}"
+    LOG_DIR = f"{filepath}/data/tuned_rnn_models/{str(datetime.now().strftime('%d-%m-%Y %H-%M-%S'))}"
 
     def build_model(hp):
         model = Sequential()
