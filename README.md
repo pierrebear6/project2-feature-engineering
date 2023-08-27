@@ -384,70 +384,83 @@ Average: .0689
 
 Here we can see that with a control data set between test sessions, there is a difference in performance of the LSTM model. There is about a 30.9% increase from the optimal 'Target' data vs. the simulated 'Target' data. This shows that there is a positive impact in adding a feature created from the SVM model. When comparing it to the LSTM model performance when the 'Target' feature is excluded, the average MAE is .076, which demonstrates that having the 'Target' variable does make a positive impact on the LSTM model.
 
-An improvement of this project is the usage of the model tuning function, which may optimize the LSTM model to fit the features provided.
-
+- Possible improvements:
+  - Usage of the model tuning function, which may optimize the LSTM model to fit the features provided.
+  - Addition of more informative anomaly and change point detection functions.
+  - Addition of SARIMA model features trained on static and rolling data.
 
 ## Use Cases
 
-### Low Volatility Options Strategies
+### Mixed Options Strategies
 
-These strategies exploit the implied volatility variable in options pricing models to collect premiums.
+Similar to Project 1, various options strategies can be used to exploit the trend prediction given by the output of the standalone SVM model
 
-**Iron Condors, Credit Spreads, Butterfly Spreads:** When the model indicates that the stock price is likely to remain within the ATR range, signifying consolidation (prediction of 1), these options strategies can be formulated. The ATR can be used to identify estimated price ranges for potential strike prices, with the chosen window size serving as the option expiration timeframe.
+### Swing Trades
 
-### Price Trend Options Strategies
-
-**Covered Calls, Cash Secured Puts:**  Similarly, these strategies allow the collection of options premium when the model predicts the stock to follow a trend rather than consolidating (prediction of 0 or 2).
-
-## Future Work
-
-- **Current Project Updates:** Additional functions may be added to improve this project such as:
-    - Expanded feature selection techniques (specific to the model)
-    - Hyperparameter tuning of feature selection techniques
-    - Preliminary feature engineering function
-    - Improved OOP/formatting
-- **Deep Dive into Feature Engineering of Time Series Data for ML Models:** Research and test various time series feature engineering techniques to improve model performance. (Feature extraction of nonstationary time series data to use as a label for RNN model?...)
-- **Other ML Algos:** Apply other machine learning methods to gain more insight into stock data.
+Multiday trades can possibly be effective when given the output of the LSTM model. Since it is given the SVM output as a feature, the LSTM model will have some insight up to 9 days ahead of the current day. (The LSTM model is also capable of doing a one-shot forecast any number of days ahead of the current day.)
 
 ## Details
 
 **Packages used:**
 ```
 
+absl-py                   1.4.0                    pypi_0    pypi
 appdirs                   1.4.4                    pypi_0    pypi
+astunparse                1.6.3                    pypi_0    pypi
 attrs                     23.1.0                   pypi_0    pypi
 beautifulsoup4            4.12.2                   pypi_0    pypi
-ca-certificates           2023.05.30           haa95532_0
+ca-certificates           2023.7.22            h56e8100_0    conda-forge
+cachetools                5.3.1                    pypi_0    pypi
 certifi                   2023.7.22                pypi_0    pypi
 charset-normalizer        3.2.0                    pypi_0    pypi
 colorama                  0.4.6                    pypi_0    pypi
 contourpy                 1.1.0                    pypi_0    pypi
+cudatoolkit               11.8.0               hd77b12b_0
 cycler                    0.11.0                   pypi_0    pypi
 dacite                    1.8.1                    pypi_0    pypi
+flatbuffers               23.5.26                  pypi_0    pypi
 fonttools                 4.42.0                   pypi_0    pypi
 frozendict                2.3.8                    pypi_0    pypi
+gast                      0.4.0                    pypi_0    pypi
+google-auth               2.22.0                   pypi_0    pypi
+google-auth-oauthlib      0.4.6                    pypi_0    pypi
+google-pasta              0.2.0                    pypi_0    pypi
+grpcio                    1.57.0                   pypi_0    pypi
+h5py                      3.9.0                    pypi_0    pypi
 html5lib                  1.1                      pypi_0    pypi
 htmlmin                   0.1.12                   pypi_0    pypi
 idna                      3.4                      pypi_0    pypi
 imagehash                 4.3.1                    pypi_0    pypi
+importlib-metadata        6.8.0                    pypi_0    pypi
 importlib-resources       6.0.1                    pypi_0    pypi
 jinja2                    3.1.2                    pypi_0    pypi
 joblib                    1.3.2                    pypi_0    pypi
+keras                     2.10.0                   pypi_0    pypi
+keras-preprocessing       1.1.2                    pypi_0    pypi
+keras-tuner               1.3.5                    pypi_0    pypi
 kiwisolver                1.4.4                    pypi_0    pypi
+kt-legacy                 1.0.5                    pypi_0    pypi
+libclang                  16.0.6                   pypi_0    pypi
 lxml                      4.9.3                    pypi_0    pypi
+markdown                  3.4.4                    pypi_0    pypi
 markupsafe                2.1.3                    pypi_0    pypi
 matplotlib                3.7.2                    pypi_0    pypi
 multimethod               1.9.1                    pypi_0    pypi
 multitasking              0.0.11                   pypi_0    pypi
 networkx                  3.1                      pypi_0    pypi
 numpy                     1.23.5                   pypi_0    pypi
+oauthlib                  3.2.2                    pypi_0    pypi
 openssl                   3.0.10               h2bbff1b_0
+opt-einsum                3.3.0                    pypi_0    pypi
 packaging                 23.1                     pypi_0    pypi
 pandas                    2.0.3                    pypi_0    pypi
 patsy                     0.5.3                    pypi_0    pypi
 phik                      0.12.3                   pypi_0    pypi
 pillow                    10.0.0                   pypi_0    pypi
 pip                       23.2.1           py39haa95532_0
+protobuf                  3.19.6                   pypi_0    pypi
+pyasn1                    0.5.0                    pypi_0    pypi
+pyasn1-modules            0.3.0                    pypi_0    pypi
 pydantic                  1.10.12                  pypi_0    pypi
 pyparsing                 3.0.9                    pypi_0    pypi
 python                    3.9.17               h1aa4202_0
@@ -456,6 +469,8 @@ pytz                      2023.3                   pypi_0    pypi
 pywavelets                1.4.1                    pypi_0    pypi
 pyyaml                    6.0.1                    pypi_0    pypi
 requests                  2.31.0                   pypi_0    pypi
+requests-oauthlib         1.3.1                    pypi_0    pypi
+rsa                       4.9                      pypi_0    pypi
 scikit-learn              1.3.0                    pypi_0    pypi
 scipy                     1.11.1                   pypi_0    pypi
 seaborn                   0.12.2                   pypi_0    pypi
@@ -466,18 +481,28 @@ sqlite                    3.41.2               h2bbff1b_0
 statsmodels               0.14.0                   pypi_0    pypi
 ta                        0.10.2                   pypi_0    pypi
 tangled-up-in-unicode     0.2.0                    pypi_0    pypi
+tensorboard               2.10.1                   pypi_0    pypi
+tensorboard-data-server   0.6.1                    pypi_0    pypi
+tensorboard-plugin-wit    1.8.1                    pypi_0    pypi
+tensorflow-estimator      2.10.0                   pypi_0    pypi
+tensorflow-gpu            2.10.0                   pypi_0    pypi
+tensorflow-intel          2.13.0                   pypi_0    pypi
+tensorflow-io-gcs-filesystem 0.31.0                   pypi_0    pypi
+termcolor                 2.3.0                    pypi_0    pypi
 threadpoolctl             3.2.0                    pypi_0    pypi
 tqdm                      4.66.1                   pypi_0    pypi
 typeguard                 2.13.3                   pypi_0    pypi
-typing-extensions         4.7.1                    pypi_0    pypi
+typing-extensions         4.5.0                    pypi_0    pypi
 tzdata                    2023.3                   pypi_0    pypi
-urllib3                   2.0.4                    pypi_0    pypi
+urllib3                   1.26.16                  pypi_0    pypi
 vc                        14.2                 h21ff451_1
 visions                   0.7.5                    pypi_0    pypi
 vs2015_runtime            14.27.29016          h5e58377_2
 webencodings              0.5.1                    pypi_0    pypi
+werkzeug                  2.3.7                    pypi_0    pypi
 wheel                     0.38.4           py39haa95532_0
 wordcloud                 1.9.2                    pypi_0    pypi
+wrapt                     1.15.0                   pypi_0    pypi
 ydata-profiling           4.5.1                    pypi_0    pypi
 yfinance                  0.2.27                   pypi_0    pypi
 zipp                      3.16.2                   pypi_0    pypi
@@ -487,6 +512,8 @@ zipp                      3.16.2                   pypi_0    pypi
 ## Usage
 
 Once this repo is imported, go to the final.py file. Since there will be different directories (mine is removed), df1 and df2 variables can be removed. There is a variable called 'example_retest', that, if set to True, retrieves pre-generated data that can be used for later operations. Once that is done, run final.py.
+
+To run the ML models, various settings can be changed throughout the final.py file, and lines of code can be commented in or out depending on usage.
 
 
 
