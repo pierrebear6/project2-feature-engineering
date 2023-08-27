@@ -198,7 +198,7 @@ With p-values below .05, both variables are stationary as there are no unit root
 
 log_return Over Time:
 
-![log_return_ot](images/relative_pct_ot.png)
+![log_return_ot](images/log_return_ot.png)
 
 relative_pct Over Time:
 
