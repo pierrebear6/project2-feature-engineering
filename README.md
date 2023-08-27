@@ -288,7 +288,7 @@ Between the 3 different data, the model accuracy is relatively similar, ranging 
 ```
 
 
-**RNN Model Results:**
+## Test Results
 
 AMD Results:
 
