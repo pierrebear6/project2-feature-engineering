@@ -155,6 +155,9 @@ Looking at the nonlinear models section of this study, both the SVM and neural n
 
 I'll test 2 different variables that are likely candidates for an RNN model to forecast. This is based on the variable's characteristics such as stationarity, IID, and variance.
 
+**Why test for potential RNN labels instead of building the models around a predefined target label?**
+Since the primary focus of this project is to test different feature engineering methods, especially the SVM model output as a feature, it is more effective to build the RNN model and label around the features that its given. Label selection is just as important as it affects the complexity of the RNN model.
+
 **The relative_pct Variable:**
 
 Statistics:
