@@ -12,7 +12,7 @@ from sklearn.feature_selection import RFE
 from sklearn.svm import SVC
 import statsmodels.api as sm
 
-filepath = 'D:/simon/portfolio_projects/project2'
+filepath = '#######'
 
 
 class GatherCandlestickData():
