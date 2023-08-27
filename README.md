@@ -17,7 +17,6 @@ This program is an extension of my previous project 1 (focused on data). This pr
 - [Machine Learning Models](#Machine-Learning-Models)
 - [Test Results](#Test-Results)
 - [Use Cases](#Use-Cases)
-- [Future Work](#Future-Work)
 - [Details](#Details)
 - [Usage](#Usage)
 
