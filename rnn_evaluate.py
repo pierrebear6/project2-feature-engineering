@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import time
 from datetime import datetime
 import sys
+import data
 
 matplotlib.use('TkAgg')
 
@@ -70,7 +71,7 @@ def store_results(predictions_df, ticker, labels, test_mae):
     stdoutOrigin = sys.stdout
     dt = datetime.now().strftime('%m-%d-%Y')
     test_mae2 = round(test_mae, 3)
-    sys.stdout = open(f"D:/simon/portfolio_projects/project2/data/forecast_results/{test_mae2}_{dt}_{ticker}.txt", "w")
+    sys.stdout = open(f"{filepath}{test_mae2}_{dt}_{ticker}.txt", "w")
     print('fart')
     sys.stdout.close()
     sys.stdout = stdoutOrigin
