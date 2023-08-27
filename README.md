@@ -373,10 +373,12 @@ df.loc[random_row_change, 'Target'] = sim_value
 Testing with the same dataset (AMD):
 
 With optimal 'Target' data:
+
+```
 Test 1: MEAN ABSOLUTE ERROR(relative_pct):  0.05462931130650463
 Test 2: MEAN ABSOLUTE ERROR(relative_pct):  0.050131781917677753
 Test 3: MEAN ABSOLUTE ERROR(relative_pct):  0.05325007232742109
-
+```
 Average: .0526
 
 With simulated 'Target' data:
