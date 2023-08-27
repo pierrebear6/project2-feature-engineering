@@ -343,9 +343,11 @@ For each of the 3 stocks data, at the end of model training, we can see that the
 
 ### Comparative Test Without SVM Output Feature
 
+```
 AMD Results: MEAN ABSOLUTE ERROR(relative_pct):  0.05220697037548478
 JNJ Results: MEAN ABSOLUTE ERROR(relative_pct):  0.06891561530684288
 AMT Results: MEAN ABSOLUTE ERROR(relative_pct):  0.10697172070994057
+```
 
 Overall, there seem to be variations with MAE slightly outperforming the SVM feature set or slightly performing worse. This can be due to RNNs having randomly initialized parameters or from the use of the Adam optimizer, which can produce different weight updates for each training session. While I'm not testing specifically for the optimization of RNN model accuracy, some statistical methods can be applied to increase understanding of model accuracy.
 
