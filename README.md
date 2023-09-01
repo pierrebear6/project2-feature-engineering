@@ -103,7 +103,7 @@ There will be one set of features used for the SVM model, and that model output 
 
 ### Features and Labels Used:
 
-Here, I'm trying to represent this data by breaking it into components that holistically describe the data through time. To optimize the feature engineering process, considerations for forecast period length must also be accounted for. In this case, the SVM will try to classify if the current price action is the start of a set category of price movement. 
+Here, I'm trying to represent this data by breaking it into components that holistically describe the data through time. To optimize the feature engineering process, considerations for forecast period length must also be accounted for. In this case, the SVM will try to classify if the current price action is the start of a set category of short term price movement. 
 
 - Base Stock Data:
   - 'Open', 'High', 'Low', 'Close' 'Volume'
@@ -137,6 +137,8 @@ Here, I'm trying to represent this data by breaking it into components that holi
     svm_df.loc[(svm_df['ema9_9'] < svm_df['ema3_9']) & (svm_df['atr_ema9_9'] < svm_df['ATR_9']), 'Target'] = 1
 ```
 (Values readjusted in the preprocessing stage)
+
+To be specific, the 'Target' variable is what the SVM model will try to classify. The 'Target' variable has 3 different classes, differentiated by if the price action 9 days ahead shows the short and long-term exponential moving average above each other('ema9_9', 'ema3_9') or if the price action shows consolidation with the ATR (average true range) being less than its exponential moving average.
 
 ### Feature Selection Considerations
 
